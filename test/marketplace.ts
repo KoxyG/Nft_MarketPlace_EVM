@@ -110,23 +110,21 @@ describe("Marketplace", function () {
       expect(acceptOffer).to.emit(NFTMarketplace, "acceptOffer").withArgs(1, signer2.address);
     });
 
-    
+    it("Owner should reject a specific offer on Listed Nft", async function () {
+      const { NFTMarketplace, owner } = await loadFixture(deployNftMarketplace);
+      const uri = "https://lavender-electric-gerbil-466.mypinata.cloud/ipfs/Qmaz3L8dtMxR3k1B8wauqZe5riv7xUFanQxMp2AkJz3V34";
+      const newNFt = await NFTMarketplace.mint(uri)
+      const newListing = await NFTMarketplace.listNFT(1, hre.ethers.parseEther("1000"));
+      const [otherAccount, signer2] = await hre.ethers.getSigners();
+      const makeOffer = await NFTMarketplace.connect(signer2).makeOffer(1, {value: hre.ethers.parseEther("2000")}); 
+      const rejectOffer = await NFTMarketplace.connect(owner).rejectOffer(1);
+
+      expect(rejectOffer).to.emit(NFTMarketplace, "rejectedOffer").withArgs(1, signer2.address);
+    });
+
+
     
     
   });
-
-  // describe("Marketplace", function () {
-  //   describe("Validations", function () {
-  //     it("Should revert with the right error if called too soon", async function () {
-  //       const { lock } = await loadFixture(deployOneYearLockFixture);
-
-  //       await expect(lock.withdraw()).to.be.revertedWith(
-  //         "You can't withdraw yet"
-  //       );
-  //     });
-
-     
-  //     });
-  //   });
 
 });
