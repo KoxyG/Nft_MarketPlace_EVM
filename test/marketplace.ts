@@ -30,6 +30,55 @@ describe("Marketplace", function () {
       expect(newNFt).to.emit(NFTMarketplace, "NFTMinted").withArgs(owner.address, 1, uri);
       expect(await NFTMarketplace._tokenIds()).to.equal(1);
     });
+
+    it("Should List new created NFT", async function () {
+      const { NFTMarketplace, owner } = await loadFixture(deployNftMarketplace);
+
+      const uri = "https://lavender-electric-gerbil-466.mypinata.cloud/ipfs/Qmaz3L8dtMxR3k1B8wauqZe5riv7xUFanQxMp2AkJz3V34";
+
+      const newNFt = await NFTMarketplace.mint(uri)
+
+
+      const newListing = await NFTMarketplace.listNFT(1, 1000); 
+
+      expect(newListing).to.emit(NFTMarketplace, "NFTListed").withArgs(1, 1000);
+    });
+
+    it("Should List new created NFT", async function () {
+      const { NFTMarketplace, owner } = await loadFixture(deployNftMarketplace);
+      const uri = "https://lavender-electric-gerbil-466.mypinata.cloud/ipfs/Qmaz3L8dtMxR3k1B8wauqZe5riv7xUFanQxMp2AkJz3V34";
+      const newNFt = await NFTMarketplace.mint(uri)
+     
+      const newListing = await NFTMarketplace.listNFT(1, 1000); 
+
+
+
+      expect(newListing).to.emit(NFTMarketplace, "NFTListed").withArgs(1, 1000);
+    });
+    it("Should cancel new Listed NFT", async function () {
+      const { NFTMarketplace, owner } = await loadFixture(deployNftMarketplace);
+      const uri = "https://lavender-electric-gerbil-466.mypinata.cloud/ipfs/Qmaz3L8dtMxR3k1B8wauqZe5riv7xUFanQxMp2AkJz3V34";
+      const newNFt = await NFTMarketplace.mint(uri)
+      const newListing = await NFTMarketplace.listNFT(1, hre.ethers.parseEther("1000")); 
+      
+
+     
+      const cancelListing = await NFTMarketplace.connect(owner).cancelListing(1); 
+
+      expect(cancelListing).to.emit(NFTMarketplace, "NFTListingCancelled").withArgs(1, owner);
+    });
+    it("A buyer should make an offer on List Nft", async function () {
+      const { NFTMarketplace, owner } = await loadFixture(deployNftMarketplace);
+      const uri = "https://lavender-electric-gerbil-466.mypinata.cloud/ipfs/Qmaz3L8dtMxR3k1B8wauqZe5riv7xUFanQxMp2AkJz3V34";
+      const newNFt = await NFTMarketplace.mint(uri)
+      const newListing = await NFTMarketplace.listNFT(1, hre.ethers.parseEther("1000")); 
+      const cancelListing = await NFTMarketplace.connect(owner).cancelListing(1); 
+
+
+      expect(cancelListing).to.emit(NFTMarketplace, "NFTListingCancelled").withArgs(1, owner);
+    });
+    
+    
   });
 
   // describe("Marketplace", function () {
