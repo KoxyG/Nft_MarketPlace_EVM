@@ -104,11 +104,13 @@ describe("Marketplace", function () {
       const newListing = await NFTMarketplace.listNFT(1, hre.ethers.parseEther("1000"));
       const [otherAccount, signer2] = await hre.ethers.getSigners();
       const makeOffer = await NFTMarketplace.connect(signer2).makeOffer(1, {value: hre.ethers.parseEther("2000")}); 
-      const cancelOffer = await NFTMarketplace.connect(signer2).cancelOffer(1);
+      
+      const acceptOffer = await NFTMarketplace.connect(owner).acceptOffer(1);
 
-
-      expect(cancelOffer).to.emit(NFTMarketplace, "OfferCreated").withArgs(1, signer2.address, hre.ethers.parseEther("2000"));
+      expect(acceptOffer).to.emit(NFTMarketplace, "acceptOffer").withArgs(1, signer2.address);
     });
+
+    
     
     
   });
