@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract NFTMarketplace is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     
-    uint256 private _tokenIds;
+    uint256 public _tokenIds;
 
     // struct for listing
     struct NFTListing {
@@ -34,6 +34,7 @@ contract NFTMarketplace is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     event OfferAccepted(uint256 tokenId, address offerer, uint256 offerAmount);
     event OfferRejected(uint256 tokenId, address offerer);
     event OfferCancelled(uint256 tokenId, address offerer, uint256 offerAmount);
+    event NftMinted(uint256 tokenId, address owner);
 
 
     // Custom errors
@@ -59,6 +60,8 @@ contract NFTMarketplace is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
         uint256 newTokenId = _tokenIds;
         _safeMint(msg.sender, newTokenId);
         _setTokenURI(newTokenId, _tokenURI);
+        
+        emit NftMinted(newTokenId, msg.sender);
         return newTokenId;
     }
 
@@ -209,7 +212,7 @@ contract NFTMarketplace is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     }
 
 
-    // withdraw stuct eth
+    // withdraw stuck eth
     function withdrawFunds() public onlyOwner nonReentrant {
         uint256 balance = address(this).balance;
         if (balance == 0) {
