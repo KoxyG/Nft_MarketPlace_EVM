@@ -207,4 +207,18 @@ contract NFTMarketplace is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     ) public view override(ERC721, ERC721URIStorage) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
+
+
+    // withdraw stuct eth
+    function withdrawFunds() public onlyOwner nonReentrant {
+        uint256 balance = address(this).balance;
+        if (balance == 0) {
+            revert("No funds to withdraw");
+        }
+        
+        (bool success, ) = payable(owner()).call{value: balance}("");
+        if (!success) {
+            revert TransferFailed();
+        }
+    }
 }
